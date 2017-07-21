@@ -775,7 +775,7 @@
     },
     length: function(value, options, attribute) {
       // Empty values are allowed
-      if (!v.isDefined(value)) {
+      if (v.isEmpty(value)) {
         return;
       }
 
@@ -823,7 +823,7 @@
     },
     numericality: function(value, options, attribute, attributes, globalOptions) {
       // Empty values are fine
-      if (!v.isDefined(value)) {
+      if (v.isEmpty(value)) {
         return;
       }
 
@@ -927,7 +927,7 @@
       }
 
       // Empty values are fine
-      if (!v.isDefined(value)) {
+      if (v.isEmpty(value)) {
         return;
       }
 
@@ -997,7 +997,7 @@
         , match;
 
       // Empty values are allowed
-      if (!v.isDefined(value)) {
+      if (v.isEmpty(value)) {
         return;
       }
       if (!v.isString(value)) {
@@ -1014,7 +1014,7 @@
     },
     inclusion: function(value, options) {
       // Empty values are fine
-      if (!v.isDefined(value)) {
+      if (v.isEmpty(value)) {
         return;
       }
       if (v.isArray(options)) {
@@ -1031,7 +1031,7 @@
     },
     exclusion: function(value, options) {
       // Empty values are fine
-      if (!v.isDefined(value)) {
+      if (v.isEmpty(value)) {
         return;
       }
       if (v.isArray(options)) {
@@ -1048,7 +1048,7 @@
       options = v.extend({}, this.options, options);
       var message = options.message || this.message || "is not a valid email";
       // Empty values are fine
-      if (!v.isDefined(value)) {
+      if (v.isEmpty(value)) {
         return;
       }
       if (!v.isString(value)) {
@@ -1093,7 +1093,7 @@
     // A URL validator that is used to validate URLs with the ability to
     // restrict schemes and some domains.
     url: function(value, options) {
-      if (!v.isDefined(value)) {
+      if (v.isEmpty(value)) {
         return;
       }
 
