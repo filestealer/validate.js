@@ -821,6 +821,42 @@
         return options.message || errors;
       }
     },
+
+    allowedEmpty: function(value, options, key, attributes) {
+      // undefined is allowed as while updating not all parameters are going to be filled in
+      if(value === undefined) {
+        return;
+      }
+
+      // If it's not an empty value, it is acceptable and we needn't validate
+      if(!v.isEmpty(value)) {
+        return;
+      }
+
+      // TODO raise an internal error if an array with the supported args are not passed 
+      if(!v.isArray(options)) {
+        return;
+      }
+
+      if(options.includes('EMPTYSTRING') && value === '') {
+        return;
+      }
+      if(options.includes('WHITESPACESTRING') && v.isString(value) && value.replace(/\s/g, '') === '') {
+        return;
+      }
+      if(options.includes('NULL') && value === null) {
+        return;
+      }
+      if(options.includes('EMPTYLIST') && v.isArray(value) && value.length === 0) {
+        return;
+      }
+      if(options.includes('EMPTYJSON') && v.isObject(value) && Object.keys(value).length === 0) {
+        return;
+      }
+
+      return "null, [], {}, '' and whitespace ridden strings are not allowed.";
+    }, 
+
     numericality: function(value, options, attribute, attributes, globalOptions) {
       // Empty values are fine
       if (v.isEmpty(value)) {
