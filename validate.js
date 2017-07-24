@@ -854,7 +854,7 @@
         return;
       }
 
-      return "null, [], {}, '' and whitespace ridden strings are not allowed.";
+      return "^Only the following empty values are allowed:- " + JSON.stringify(options);
     }, 
 
     numericality: function(value, options, attribute, attributes, globalOptions) {
