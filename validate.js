@@ -835,7 +835,7 @@
 
       // TODO raise an internal error if an array with the supported args are not passed 
       if(!v.isArray(options)) {
-        return;
+        throw new Error("Options should be an array with the type of empty values allowed by the particular field.");
       }
 
       if(options.includes('EMPTYSTRING') && value === '') {
