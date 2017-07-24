@@ -21,10 +21,10 @@ describe("validators.format", function() {
   });
 
   it("doesn't allow values that doesn't matches the pattern", function() {
-    expect(format("", options1)).toBeDefined("is invalid");
-    expect(format("", options2)).toBeDefined("is invalid");
-    expect(format(" ", options1)).toBeDefined("is invalid");
-    expect(format(" ", options2)).toBeDefined("is invalid");
+    expect(format("", options1)).not.toBeDefined();
+    expect(format("", options2)).not.toBeDefined();
+    expect(format(" ", options1)).not.toBeDefined();
+    expect(format(" ", options2)).not.toBeDefined();
     expect(format("barfoo", options1)).toEqual("is invalid");
     expect(format("barfoo", options2)).toEqual("is invalid");
   });

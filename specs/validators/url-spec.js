@@ -21,8 +21,8 @@ describe("validators.url", function() {
   it("doesn't allow 'invalid' urls", function() {
     var expected = "is not a valid url";
 
-    expect(url("", {})).toBeDefined();
-    expect(url(" ", {})).toBeDefined();
+    expect(url("", {})).not.toBeDefined();
+    expect(url(" ", {})).not.toBeDefined();
     expect(url("http://", {})).toBeDefined();
     expect(url("http://.", {})).toBeDefined();
     expect(url("http://..", {})).toBeDefined();

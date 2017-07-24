@@ -60,8 +60,8 @@ describe('validators.datetime', function() {
   it("doesn't allow invalid dates", function() {
     var expected = "must be a valid date";
     expect(datetime("foobar", {})).toEqual(expected);
-    expect(datetime("", {})).toEqual(expected);
-    expect(datetime("  ", {})).toEqual(expected);
+    expect(datetime("", {})).not.toBeDefined();
+    expect(datetime("  ", {})).not.toBeDefined();
   });
 
   it("doesn't allow h, m or s when dateOnly is true", function() {

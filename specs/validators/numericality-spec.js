@@ -30,8 +30,8 @@ describe("validators.numericality", function() {
 
   it("doesn't allow non numbers", function() {
     var e = "is not a number";
-    expect(numericality("", {})).toEqual(e);
-    expect(numericality("  ", {})).toEqual(e);
+    expect(numericality("", {})).not.toBeDefined();
+    expect(numericality("  ", {})).not.toBeDefined();
     expect(numericality("foo", {})).toEqual(e);
     expect(numericality(NaN, {})).toEqual(e);
     expect(numericality(false, {})).toEqual(e);

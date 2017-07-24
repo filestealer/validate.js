@@ -32,8 +32,8 @@ describe('validators.email', function() {
 
   it("doesn't allow 'invalid' emails", function() {
     var expected = "is not a valid email";
-    expect(email("", {})).toEqual(expected);
-    expect(email(" ", {})).toEqual(expected);
+    expect(email("", {})).not.toBeDefined();
+    expect(email(" ", {})).not.toBeDefined();
     expect(email("foobar", {})).toEqual(expected);
     expect(email("foo@bar", {})).toEqual(expected);
 

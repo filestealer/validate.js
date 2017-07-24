@@ -108,8 +108,8 @@ describe('validator.length', function() {
       };
       expect(length({length: 9}, options)).toHaveLength(3);
       expect(length("foobar", options)).toHaveLength(3);
-      expect(length("", options)).toHaveLength(2);
-      expect(length(" ", options)).toHaveLength(2);
+      expect(length("", options)).not.toBeDefined();
+      expect(length(" ", options)).not.toBeDefined();
   });
 
   it("return the message only once if specified", function() {
