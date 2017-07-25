@@ -21,6 +21,10 @@ describe("validators.numericality", function() {
   it("allows empty values", function() {
     expect(numericality(null, {})).not.toBeDefined();
     expect(numericality(undefined, {})).not.toBeDefined();
+    expect(numericality("", {})).not.toBeDefined();
+    expect(numericality(" ", {})).not.toBeDefined();
+    expect(numericality({}, {})).not.toBeDefined();
+    expect(numericality([], {})).not.toBeDefined();
   });
 
   it("allows numbers", function() {
@@ -30,8 +34,6 @@ describe("validators.numericality", function() {
 
   it("doesn't allow non numbers", function() {
     var e = "is not a number";
-    expect(numericality("", {})).not.toBeDefined();
-    expect(numericality("  ", {})).not.toBeDefined();
     expect(numericality("foo", {})).toEqual(e);
     expect(numericality(NaN, {})).toEqual(e);
     expect(numericality(false, {})).toEqual(e);

@@ -57,11 +57,21 @@ describe('validators.datetime', function() {
     expect(datetime("2013-10-26 13:47:00", {})).not.toBeDefined();
   });
 
+  it('skips empty types', function() {
+    // empty values are not validated.
+    // user should use the inbuilt function 'allowedEmpty' if they want to
+    // validate whether it's allowed or not
+    expect(datetime("", {})).not.toBeDefined();
+    expect(datetime(" ", {})).not.toBeDefined();
+    expect(datetime({}, {})).not.toBeDefined();
+    expect(datetime([], {})).not.toBeDefined();
+    expect(datetime(null, {})).not.toBeDefined();
+
+  });
+
   it("doesn't allow invalid dates", function() {
     var expected = "must be a valid date";
     expect(datetime("foobar", {})).toEqual(expected);
-    expect(datetime("", {})).not.toBeDefined();
-    expect(datetime("  ", {})).not.toBeDefined();
   });
 
   it("doesn't allow h, m or s when dateOnly is true", function() {

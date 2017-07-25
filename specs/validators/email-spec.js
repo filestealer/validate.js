@@ -30,10 +30,19 @@ describe('validators.email', function() {
     expect(email("foo@some.customtld", {})).not.toBeDefined();
   });
 
-  it("doesn't allow 'invalid' emails", function() {
-    var expected = "is not a valid email";
+  it('skips empty types', function() {
+    // empty values are not validated.
+    // user should use the inbuilt function 'allowedEmpty' if they want to
+    // validate whether it's allowed or not
     expect(email("", {})).not.toBeDefined();
     expect(email(" ", {})).not.toBeDefined();
+    expect(email({}, {})).not.toBeDefined();
+    expect(email([], {})).not.toBeDefined();
+    expect(email(null, {})).not.toBeDefined();
+  });
+
+  it("doesn't allow 'invalid' emails", function() {
+    var expected = "is not a valid email";
     expect(email("foobar", {})).toEqual(expected);
     expect(email("foo@bar", {})).toEqual(expected);
 

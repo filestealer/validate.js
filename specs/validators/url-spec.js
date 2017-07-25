@@ -18,11 +18,20 @@ describe("validators.url", function() {
     expect(url({key: "i'm a string"}, {})).toBeDefined();
   });
 
-  it("doesn't allow 'invalid' urls", function() {
-    var expected = "is not a valid url";
-
+  it('skips empty types', function() {
+    // empty values are not validated.
+    // user should use the inbuilt function 'allowedEmpty' if they want to
+    // validate whether it's allowed or not
     expect(url("", {})).not.toBeDefined();
     expect(url(" ", {})).not.toBeDefined();
+    expect(url({}, {})).not.toBeDefined();
+    expect(url([], {})).not.toBeDefined();
+    expect(url(null, {})).not.toBeDefined();
+
+  });
+
+  it("doesn't allow 'invalid' urls", function() {
+    var expected = "is not a valid url";
     expect(url("http://", {})).toBeDefined();
     expect(url("http://.", {})).toBeDefined();
     expect(url("http://..", {})).toBeDefined();
