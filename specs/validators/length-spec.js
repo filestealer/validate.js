@@ -9,9 +9,19 @@ describe('validator.length', function() {
     delete validate.validators.length.options;
   });
 
+  describe("non-strings", function() {
+    it("should disallow non string values", function() {
+      var options = {is: 10};
+      var message = "should be a string.";
+      expect(length(['foo'], options)).toEqual(message);
+      expect(length(23, options)).toEqual(message);
+      expect(length({"key": "fasd"}, options)).toEqual(message);
+      expect(length(new Date(), options)).toEqual(message);
+    });
+  });
   describe("is", function() {
     it("allows you to specify a fixed length the object has to be", function() {
-      var value = {length: 10}
+      var value = "1234567890" // length 10 
         , options = {is: 10};
       expect(length(value, options)).not.toBeDefined();
 
@@ -21,7 +31,7 @@ describe('validator.length', function() {
     });
 
     it("allows a custom message", function() {
-      var value = {length: 10}
+      var value = "aaaaaaaaaa" //length 10
         , options = {is: 11};
 
       validate.validators.length.wrongLength = "default %{count}";
@@ -34,7 +44,7 @@ describe('validator.length', function() {
 
   describe("minimum", function() {
     it("allows you to specify a minimum value", function() {
-      var value = {length: 10}
+      var value = "hhhhhhhhhh" //length 10 
         , options = {minimum: 10};
       expect(length(value, options)).not.toBeDefined();
 
@@ -44,7 +54,7 @@ describe('validator.length', function() {
     });
 
     it("allows a custom message", function() {
-      var value = {length: 10}
+      var value = "abhirath12" //length 10
         , options = {minimum: 11};
 
       validate.validators.length.tooShort = "default %{count}";
@@ -58,7 +68,7 @@ describe('validator.length', function() {
 
   describe("maximum", function() {
     it("allows you to specify a maximum value", function() {
-      var value = {length: 11}
+      var value = "adithya1234" //length 11 
         , options = {maximum: 11};
       expect(length(value, options)).not.toBeDefined();
 
@@ -68,7 +78,7 @@ describe('validator.length', function() {
     });
 
     it("allows a custom message", function() {
-      var value = {length: 11}
+      var value = "adithya1234" //length 11 
         , options = {maximum: 10};
 
       validate.validators.length.tooLong = "default %{count}";
@@ -90,7 +100,6 @@ describe('validator.length', function() {
   });
 
   it("refuses values without a numeric length property", function() {
-    spyOn(validate, "error");
     var options = {is: 10, minimum: 10, maximum: 20};
     expect(length(3.1415, options)).toBeDefined();
     expect(length(-3.1415, options)).toBeDefined();
@@ -99,7 +108,6 @@ describe('validator.length', function() {
     expect(length({lengthi: 10}, options)).toBeDefined();
     expect(length({length: "foo"}, options)).toBeDefined();
     expect(length(3, {})).toBeDefined();
-    expect(validate.error).toHaveBeenCalled();
   });
 
   // This test is not a real life example, specifying is with anything else
@@ -110,12 +118,12 @@ describe('validator.length', function() {
           minimum: 20,
           maximum: 5
       };
-      expect(length({length: 9}, options)).toHaveLength(3);
+      expect(length("rohan1234", options)).toHaveLength(3);
       expect(length("foobar", options)).toHaveLength(3);
   });
 
   it("return the message only once if specified", function() {
-    var value = {length: 9}
+    var value = "aabbccdd1" // length 9
       , options = {
           message: "my message",
           is: 10,
@@ -126,7 +134,7 @@ describe('validator.length', function() {
   });
 
   it("doesn't override specific messages with the default one", function() {
-    var value = {length: 3}
+    var value = "foo"
       , options = {
         is: 2,
         minimum: 4,
@@ -164,8 +172,8 @@ describe('validator.length', function() {
       message: "barfoo"
     };
     var options = {message: 'foobar'};
-    expect(length(4, options)).toEqual('foobar');
-    expect(length(4, {})).toEqual('barfoo');
+    expect(length("adfsf", options)).toEqual('foobar');
+    expect(length("fasdfa", {})).toEqual('barfoo');
     expect(tokenizer).toHaveBeenCalled();
     expect(validate.validators.length.options).toEqual({
       minimum: 10,
