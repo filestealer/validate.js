@@ -779,6 +779,11 @@
         return;
       }
 
+      // If it isn't a string, don't continue
+      if (!v.isString(value)) {
+        return "should be a string.";
+      }
+
       options = v.extend({}, this.options, options);
 
       var is = options.is
@@ -790,10 +795,6 @@
 
       value = tokenizer(value);
       var length = value.length;
-      if(!v.isNumber(length)) {
-        v.error(v.format("Attribute %{attr} has a non numeric value for `length`", {attr: attribute}));
-        return options.message || this.notValid || "has an incorrect length";
-      }
 
       // Is checks
       if (v.isNumber(is) && length !== is) {
@@ -838,19 +839,21 @@
         throw new Error("Options should be an array with the type of empty values allowed by the particular field.");
       }
 
-      if(options.includes('EMPTYSTRING') && value === '') {
+      if(options.indexOf('EMPTYSTRING') != -1 && value === '') {
         return;
       }
-      if(options.includes('WHITESPACESTRING') && v.isString(value) && value.replace(/\s/g, '') === '') {
+      if(options.indexOf('WHITESPACESTRING') != -1 && v.isString(value) && value.replace(/\s/g, '') === '') {
         return;
       }
-      if(options.includes('NULL') && value === null) {
+      if(options.indexOf('NULL') != -1 && value === null) {
         return;
       }
-      if(options.includes('EMPTYLIST') && v.isArray(value) && value.length === 0) {
+      if(options.indexOf('EMPTYLIST') != -1 && v.isArray(value) && value.length === 0) {
         return;
       }
-      if(options.includes('EMPTYJSON') && v.isObject(value) && Object.keys(value).length === 0) {
+      // v.isObject() returns true for arrays and objects but we only want 
+      // it to react to Objects(JSON)
+      if(options.indexOf('EMPTYJSON') != -1 && Object.prototype.toString.call(value) === '[object Object]' && Object.keys(value).length === 0) {
         return;
       }
 

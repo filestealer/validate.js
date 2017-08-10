@@ -4,6 +4,8 @@ Validate.js provides a declarative way of validating javascript objects.
 
 For documentation please see [validatejs.org/](http://validatejs.org/).
 
+### Don't use presence, use emptyAllowed instead
+
 For issues and feature requests visit the [issue tracker](https://github.com/ansman/validate.js/issues).
 
 Building validate.js
