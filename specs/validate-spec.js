@@ -82,7 +82,7 @@ describe("validate", function() {
   it("works with nested objects set to null", function() {
     var constraints = {
       "foo.bar": {
-        presence: true
+        allowedEmpty: []
       }
     };
     expect(validate({foo: null}, constraints)).toBeDefined();
@@ -219,13 +219,13 @@ describe("validate", function() {
         , $form = $(form);
       form.innerHTML = '<input type="text" name="foo" value="bar">';
       spyOn(validate, "collectFormValues").and.callThrough();
-      spyOn(validate.validators, "presence").and.callThrough();
-      var constraints = {foo: {presence: true}};
+      spyOn(validate.validators, "allowedEmpty").and.callThrough();
+      var constraints = {foo: {allowedEmpty: []}};
 
       validate(form, constraints);
 
       expect(validate.collectFormValues).toHaveBeenCalledWith(form);
-      expect(validate.validators.presence).toHaveBeenCalledWith(
+      expect(validate.validators.allowedEmpty).toHaveBeenCalledWith(
         "bar",
         true,
         "foo",
@@ -235,7 +235,7 @@ describe("validate", function() {
 
       validate($form, constraints);
       expect(validate.collectFormValues).toHaveBeenCalledWith($form);
-      expect(validate.validators.presence).toHaveBeenCalledWith(
+      expect(validate.validators.allowedEmpty).toHaveBeenCalledWith(
         "bar",
         true,
         "foo",
@@ -245,11 +245,11 @@ describe("validate", function() {
     });
 
     it("calls custom prettify in global options", function() {
-      var constraints = {foo: {presence: true}}
+      var constraints = {foo: {allowedEmpty: []}}
         , options = {format: "flat", prettify: function() {}};
       spyOn(options, "prettify").and.returnValue("foobar");
       spyOn(validate, "prettify").and.returnValue("baz");
-      expect(validate({}, constraints, options)).toEqual(["Foobar can't be blank"]);
+      expect(validate({foo: null}, constraints, options)).toEqual(["Only the following empty values are allowed:- []"]);
       expect(options.prettify).toHaveBeenCalledWith("foo");
       expect(validate.prettify).not.toHaveBeenCalled();
     });
@@ -306,7 +306,7 @@ describe("validate", function() {
       it("returns a flat list of errors", function() {
         var c = {
           foo: {
-            presence: true,
+            allowedEmpty: [],
             numericality: true,
             length: {
               is: 23,
@@ -321,9 +321,9 @@ describe("validate", function() {
       });
 
       it("fullMessages = false", function() {
-        var constraints = {foo: {presence: true}}
+        var constraints = {foo: {allowedEmpty: []}}
           , options = {format: "flat", fullMessages: false};
-        expect(validate({}, constraints, options)).toEqual(["can't be blank"]);
+        expect(validate({foo: []}, constraints, options)).toEqual(["Only the following empty values are allowed:- []"]);
       });
 
       it("deduplicates errors", function() {
@@ -371,7 +371,7 @@ describe("validate", function() {
         };
         var c = {
           foo: {
-            presence: true,
+            allowedEmpty: [],
             length: {
               is: 15,
               message: "^foobar",
@@ -480,7 +480,7 @@ describe("validate", function() {
   });
 
   it("allows default options", function() {
-    var constraints = {foo: {presence: true}}
+    var constraints = {foo: {allowedEmpty: []}}
       , options = {foo: "bar"};
     validate.options = {format: "flat"};
     expect(validate({}, constraints, options)).toEqual(["Foo can't be blank"]);
@@ -491,26 +491,24 @@ describe("validate", function() {
   describe("single", function() {
     it("validates the single property", function() {
       var validators = {
-        presence: {
-          message: "example message"
-        },
+        allowedEmpty: [],
         length: {
           is: 6,
           message: "^It needs to be 6 characters long"
         }
       };
 
-      expect(validate.single(null, validators)).toEqual(["example message"]);
+      expect(validate.single(null, validators)).toEqual(["Only the following empty values are allowed:- []"]);
       expect(validate.single("foo", validators)).toEqual(["It needs to be 6 characters long"]);
       expect(validate.single("foobar", validators)).not.toBeDefined();
     });
 
     it("doesn't support the format and fullMessages options", function() {
-      var validators = {presence: true}
+      var validators = {allowedEmpty: []}
         , options = {format: "detailed", fullMessages: true};
 
       expect(validate.single(null, validators, options))
-        .toEqual(["can't be blank"]);
+        .toEqual(["Only the following empty values are allowed:- []"]);
     });
   });
 

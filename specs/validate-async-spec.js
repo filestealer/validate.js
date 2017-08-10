@@ -63,7 +63,7 @@ describe("validate.async", function() {
 
   it.promise("resolves the promise if all constraints pass", function() {
     var attrs = {foo: "bar"}
-      , constraints = {foo: {presence: true}};
+      , constraints = {foo: {allowedEmpty: []}};
     return validate.async(attrs, constraints).then(success, error).then(function() {
       expect(error).not.toHaveBeenCalled();
       expect(success).toHaveBeenCalledWith(attrs);
@@ -71,8 +71,8 @@ describe("validate.async", function() {
   });
 
   it.promise("rejects the promise if any constraint fails", function() {
-    var c = {name: {presence: true}};
-    return validate.async({}, c).then(success, error).then(function() {
+    var c = {name: {allowedEmpty: []}};
+    return validate.async({name: []}, c).then(success, error).then(function() {
       expect(success).not.toHaveBeenCalled();
       expect(error).toHaveBeenCalled();
     });
@@ -107,11 +107,11 @@ describe("validate.async", function() {
   });
 
   it.promise("supports fullMessages: false", function() {
-    var c = {name: {presence: true}};
-    return validate.async({}, c, {fullMessages: false}).then(success, error).then(function() {
+    var c = {name: {allowedEmpty: []}};
+    return validate.async({name: ''}, c, {fullMessages: false}).then(success, error).then(function() {
       expect(success).not.toHaveBeenCalled();
       expect(error).toHaveBeenCalledWith({
-        name: ["can't be blank"]
+        name: ["Only the following empty values are allowed:- []"]
       });
     });
   });
@@ -218,7 +218,7 @@ describe("validate.async", function() {
 
   it.promise("cleans the attributes per default", function() {
     var attrs = {foo: "bar"}
-      , constraints = {bar: {presence: true}}
+      , constraints = {bar: {allowedEmpty: []}}
       , cleaned = {bar: "foo"};
 
     spyOn(validate, "cleanAttributes").and.returnValue(cleaned);
@@ -232,7 +232,7 @@ describe("validate.async", function() {
 
   it.promise("doesn't cleans the attributes is cleanAttributes: false", function() {
     var attrs = {foo: "bar"}
-      , constraints = {foo: {presence: true}}
+      , constraints = {foo: {allowedEmpty: []}}
       , cleaned = {bar: "foo"};
 
     spyOn(validate, "cleanAttributes").and.returnValue(cleaned);
@@ -277,7 +277,7 @@ describe("validate.async", function() {
         return errors;
       });
 
-      return validate.async({}, {foo: {presence: true}}, {wrapErrors: wrapper}).then(success, error).then(function() {
+      return validate.async({foo: null}, {foo: {allowedEmpty: []}}, {wrapErrors: wrapper}).then(success, error).then(function() {
         expect(error).toHaveBeenCalled();
         expect(success).not.toHaveBeenCalled();
         expect(wrapper).toHaveBeenCalled();
