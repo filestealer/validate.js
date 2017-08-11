@@ -188,11 +188,11 @@ describe("validate.async", function() {
 
   it.promise("allows default options", function() {
     validate.async.options = {format: "flat"};
-    var c = {name: {presence: true}}
+    var c = {name: {allowedEmpty: []}}
       , options = {foo: "bar"};
-    return validate.async({}, c, options).then(success, error).then(function() {
+    return validate.async({name: {}}, c, options).then(success, error).then(function() {
       expect(success).not.toHaveBeenCalled();
-      expect(error).toHaveBeenCalledWith(["Name can't be blank"]);
+      expect(error).toHaveBeenCalledWith(["Only the following empty values are allowed:- []"]);
       expect(options).toEqual({foo: "bar"});
       expect(validate.async.options).toEqual({format: "flat"});
     });

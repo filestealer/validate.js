@@ -85,7 +85,7 @@ describe("validate", function() {
         allowedEmpty: []
       }
     };
-    expect(validate({foo: null}, constraints)).toBeDefined();
+    expect(validate({foo: {bar: null}}, constraints)).toBeDefined();
   });
 
   describe("runValidations", function() {
@@ -227,7 +227,7 @@ describe("validate", function() {
       expect(validate.collectFormValues).toHaveBeenCalledWith(form);
       expect(validate.validators.allowedEmpty).toHaveBeenCalledWith(
         "bar",
-        true,
+        [],
         "foo",
         {foo: "bar"},
         {}
@@ -237,7 +237,7 @@ describe("validate", function() {
       expect(validate.collectFormValues).toHaveBeenCalledWith($form);
       expect(validate.validators.allowedEmpty).toHaveBeenCalledWith(
         "bar",
-        true,
+        [],
         "foo",
         {foo: "bar"},
         {}
@@ -249,8 +249,8 @@ describe("validate", function() {
         , options = {format: "flat", prettify: function() {}};
       spyOn(options, "prettify").and.returnValue("foobar");
       spyOn(validate, "prettify").and.returnValue("baz");
-      expect(validate({foo: null}, constraints, options)).toEqual(["Only the following empty values are allowed:- []"]);
-      expect(options.prettify).toHaveBeenCalledWith("foo");
+      expect(validate({foo: {}}, constraints, options)).toEqual(["Only the following empty values are allowed:- []"]);
+      expect(options.prettify).toHaveBeenCalledWith({});
       expect(validate.prettify).not.toHaveBeenCalled();
     });
 
@@ -483,7 +483,7 @@ describe("validate", function() {
     var constraints = {foo: {allowedEmpty: []}}
       , options = {foo: "bar"};
     validate.options = {format: "flat"};
-    expect(validate({}, constraints, options)).toEqual(["Foo can't be blank"]);
+    expect(validate({foo: {}}, constraints, options)).toEqual(["Only the following empty values are allowed:- []"]);
     expect(options).toEqual({foo: "bar"});
     expect(validate.options).toEqual({format: "flat"});
   });

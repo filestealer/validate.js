@@ -1,12 +1,15 @@
 validate.js
 ===
-Validate.js provides a declarative way of validating javascript objects.
 
 For documentation please see [validatejs.org/](http://validatejs.org/).
 
-### Don't use presence, use emptyAllowed instead
-
-For issues and feature requests visit the [issue tracker](https://github.com/ansman/validate.js/issues).
+This forked version is very similar to the [Validate.js as on 25th June](https://github.com/ansman/validate.js/tree/07f64ec81e8dd71d1553c20d750fbb3b7ed40018). The changes I've made are listed below.  
+- Presence validator removed.
+- Empty values ([], blah, blah) always pass validation and are allowed by default.
+- null can be used to unset and that's the reason behind allowedEmpty validator.
+- If you want to disallow emptyvalues use allowedEmpty to whitelist emtpy values.
+- undefined values (values that are not even set) always pass all kinds of validations because the client hasn't even set it.
+- Nested be careful. "foo.bar" say foo doesn't have the property bar, so it'll be undefined. The same rules apply, hence be careful.
 
 Building validate.js
 ---
@@ -27,19 +30,3 @@ You can run continuous testing that runs the tests on file changes by running
 `grunt watch` or simply `grunt`.
 
 If you want to just run the tests once you can do that by running `grunt test`.
-
-Build status
----
-[![Build Status](https://travis-ci.org/ansman/validate.js.svg?branch=master)](https://travis-ci.org/ansman/validate.js)
-[![Coverage Status](https://coveralls.io/repos/ansman/validate.js/badge.svg?branch=master)](https://coveralls.io/r/ansman/validate.js?branch=master)
-
-Contributing
----
-Before opening a pull request please make sure your changes follow the
-[contribution guidelines](https://github.com/ansman/validate.js/blob/master/CONTRIBUTING.md).
-
-Users of validate.js
----
-If your site, library or application uses validate.js and would like to be shown
-here please feel free to email <a href="mailto:info@validatejs.org">info@validatejs.org</a>
-with the name and optionally a URL to the project and it will be added here.
