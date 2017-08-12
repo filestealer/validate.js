@@ -370,7 +370,7 @@
           <li><a href="#validators-inclusion">Inclusion</a></li>
           <li><a href="#validators-length">Length</a></li>
           <li><a href="#validators-numericality">Numericality</a></li>
-          <li><a href="#validators-presence">Presence</a></li>
+          <li><a href="#validators-allowedempty">Allowed Empty</a></li>
           <li><a href="#validators-url">URL</a></li>
         </ul>
       </li>
@@ -487,22 +487,6 @@
               </a>
             </div>
           </div>
-          <div id="installing">
-            <h2>Installing</h2>
-            <b>Browser/CDN</b>
-            <pre><code class="html">&lt;script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.11.1/validate.min.js"&gt;&lt;/script&gt;</code></pre>
-            <b>Require.js/AMD</b>
-            <pre><code class="javascript">require(["validate.js"], function(validate) {
-  // ...
-});</code></pre>
-            <b>npm/node.js</b>
-            <pre><code class="bash">$ npm install --save validate.js</code></pre>
-            <pre><code class="javascript">var validate = require("validate.js");</code></pre>
-            <b>Bower</b>
-            <pre><code class="bash">$ bower install --save validate.js</code></pre>
-            <b>Component</b>
-            <pre><code class="bash">$ component install ansman/validate.js</code></pre>
-          </div>
           <h2 id="dependencies">Dependencies</h2>
           <p class="dependencies">
             There are no required external dependencies at all! Though for the
@@ -611,7 +595,7 @@ validate.Promise = Q.Promise;</code></pre>
           </p>
           <pre><code class="javascript">var constraints = {
   creditCardNumber: {
-    presence: true,
+    allowedEmpty: [],
     format: {
       pattern: /^(34|37|4|5[1-5]).*$/,
       message: function(value, attribute, validatorOptions, attributes, globalOptions) {
@@ -620,6 +604,7 @@ validate.Promise = Q.Promise;</code></pre>
         });
       }
     },
+    // This will create a custom validator length instead of the default
     length: function(value, attributes, attributeName, options, constraints) {
       if (value) {
         // Amex
@@ -630,13 +615,6 @@ validate.Promise = Q.Promise;</code></pre>
       // Unknown card, don't validate length
       return false;
     }
-  },
-  creditCardZip: function(value, attributes, attributeName, options, constraints) {
-    if (!(/^(34|37).*$/).test(attributes.creditCardNumber)) return null;
-    return {
-      presence: {message: "is required when using AMEX"},
-      length: {is: 5}
-    };
   }
 };
 
@@ -648,19 +626,12 @@ validate({creditCardNumber: "9999999999999999"}, constraints);
 
 validate({creditCardNumber: "4242424242424242"}, constraints);
 // =&gt; undefined
+</code></pre>
 
-validate({creditCardNumber: "340000000000000"}, constraints);
-// =&gt; {"creditCardZip": ["Credit card zip is required when using AMEX"]}</code></pre>
-
-          <p class="description">
-            If you don't want to give any options to a validator you may pass
-            <code>true</code> instead of an empty object. The validator will not
-            be run if the options are falsy.
-          </p>
           <p class="notes">
-            <b>Important!</b> Most validators consider undefined values
-            (<code>null</code> and <code>undefined</code>) valid values so make
-            sure you use the <code>presence</code> validator on attributes that
+            <b>Important!</b> Most validators consider undefined and empty values
+            (<code>null, undefined, {}, [], "", "  " (white space strings)</code>) valid values so make
+            sure you use the <code>allowedEmpty</code> validator on attributes that
             are required.
           </p>
         </div>
@@ -714,14 +685,12 @@ validate({creditCardNumber: "340000000000000"}, constraints);
           </p>
           <pre><code class="javascript">var constraints = {
   username: {
-    presence: true,
     exclusion: {
       within: ["nicklas"],
       message: "'%{value}' is not allowed"
     }
   },
   password: {
-    presence: true,
     length: {
       minimum: 6,
       message: "must be at least 6 characters"
@@ -731,7 +700,6 @@ validate({creditCardNumber: "340000000000000"}, constraints);
 
 validate({password: "bad"}, constraints);
 // =&gt; {
-//   "username": ["Username can't be blank"],
 //   "password": ["Password must be at least 6 characters"]
 // }
 
@@ -742,10 +710,11 @@ validate({username: "nicklas", password: "better"}, constraints);
 // =&gt; {"username": ["Username 'nicklas' is not allowed"]}
 
 validate({password: "better"}, constraints, {fullMessages: false});
-// =&gt; {"username": ["can't be blank"]}
+// =&gt; undefined
 
 validate({}, constraints, {format: "flat"});
-// =&gt; ["Username can't be blank", "Password can't be blank"]
+// =&gt; undefined
+// nothing has been passed in, nothing to validate hence no errors
 
 validate({username: "nicklas", password: "bad"}, constraints, {format: "detailed"});
 // =&gt; [
@@ -787,8 +756,7 @@ validate({username: "nicklas", password: "bad"}, constraints, {format: "detailed
 //   }
 // ]
 
-validate({}, {username: {presence: {message: "^You must pick a username"}}});
-// =&gt; {"username": ["You must pick a username"]}</code></pre>
+</code></pre>
           <div id="validate-async">
             <h3>Async validation</h3>
             <div class="signature">
@@ -859,7 +827,7 @@ function error(errors) {
 
 var constraints = {
   name: {
-    presence: true
+    allowedEmpty: []
   },
   // This is so the country doesn't get removed when cleaning the attributes
   country: {}
@@ -928,13 +896,13 @@ validate.Promise = RSVP.Promise;</code></pre>
               <a href="#utilities-prettify">prettify</a>
               utility functions to append your own name.
             </p>
-            <pre><code class="javascript">validate.single(null, {presence: true, email: true});
-// =&gt; ["can't be blank"]
+            <pre><code class="javascript">validate.single(null, {allowedEmpty: [], email: true});
+// =&gt; ["Only the following empty values are allowed:- []"]
 
-validate.single("foo", {presence: true, email: true});
+validate.single("foo", {allowedEmpty: [], email: true});
 // =&gt; ["is not a valid email"]
 
-validate.single("foo@bar.com", {presence: true, email: true});
+validate.single("foo@bar.com", {allowedEmpty: [], email: true});
 // =&gt; undefined</code></pre>
           </div>
           <div id="validate-nested">
@@ -951,7 +919,7 @@ validate.single("foo@bar.com", {presence: true, email: true});
             </p>
             <pre><code class="javascript">var constraints = {
   "addresses.shipping": {
-    presence: true
+    allowedEmpty: []
   },
   "addresses.shipping.street": {
     format: {
@@ -963,7 +931,11 @@ validate.single("foo@bar.com", {presence: true, email: true});
 };
 
 validate({}, constraints);
-// =&gt; {"addresses.shipping": ["Addresses shipping can't be blank"]}
+// =&gt; undefined
+// since address.shipping is undefined, no validations happen
+
+validate({address: {shipping: null}}, constraints);
+// =&gt; {"address.shipping": ['Only the following empty values are allowed:- []']}
 
 validate({addresses: {shipping: {street: "Foobar"}}}, constraints);
 // =&gt; {"addresses.shipping.street": ["The street for the shipping address must be a valid street name"]}
@@ -986,18 +958,17 @@ validate({"foo.bar": 3}, {"foo\\.bar": {numericality: {even: true}}});
             </p>
             <pre><code class="javascript">var constraints = {
   name: {
-    presence: true
+    allowedEmpty: []
   }
 };
 
 validate.options = {format: "flat"};
 validate.async.options = {format: "flat", cleanAttributes: false};
-validate.validators.presence.options = {message: "can't be empty"};
 
 // The default options will be used for both the
 // validator and the validate function
-validate({}, constraints);
-// =&gt; ["Name can't be empty"]
+validate({name: null}, constraints);
+// =&gt; ["Only the following empty values are allowed:- []"]
 
 // The default options are not used if the constraints options are falsy
 validate({format: "grouped"}, {});
@@ -1022,14 +993,14 @@ validate({format: "grouped"}, {});
             </p>
             <pre><code class="javascript">var constraints = {
   username: {
-    presence: true,
+    allowedEmpty: [],
     exclusion: {
       within: ["nicklas"],
       message: "'%{value}' is not allowed"
     }
   },
   password: {
-    presence: true,
+    allowedEmpty: [],
     length: {
       minimum: 6,
       message: "must be at least 6 characters"
@@ -1037,8 +1008,8 @@ validate({format: "grouped"}, {});
   }
 };
 
-validate({}, constraints, {format: "flat"});
-// =&gt; ["Username can't be blank", "Password can't be blank"]
+validate({username: null, password: null}, constraints, {format: "flat"});
+// =&gt; ["Only the following empty values are allowed:= []", "Only the following empty values are allowed:= []"]
 
 validate({username: "nicklas", password: "bad"}, constraints, {format: "detailed"});
 // =&gt; [
@@ -1724,54 +1695,59 @@ validate({duration: 4711}, constraints);
 //   ]
 // }</code></pre>
           </div>
-          <div id="validators-presence">
-            <div class="signature"><b>presence</b></div>
+          <div id="validators-allowedempty">
+            <div class="signature"><b>allowedEmpty</b></div>
             <p class="description">
-              The presence validator validates that the value isn't defined.
-              This validator will probably the most used one, it corresponds to
-              HTML5's required attribute.<br>
-              You can use the <b>message</b> option to customize the message. The
-              default message is <i>can't be blank</i> and can be changed by
-              setting <code>validate.validators.presence.message</code>.
+              Normally if an empty values is passed in any validator, most of the validators just
+              pass it. In case you want more fine control over what the user can send, you will need to 
+              set this field. You will probably end up using this a lot to maintain database integrity or
+              to have greater control. You pass in a list of the accepted empty values like 
+              <code>['NULL', 'EMPTYSTRING', 'WHITESPACESTRING', 'EMPTYLIST', 'EMPTYJSON']</code>
             </p>
-            <p class="description">
-              These are the values that are considered empty:
-            </p>
-            <ul>
-              <li><code>null</code></li>
-              <li><code>undefined</code></li>
-            </ul>
             <p class="description">
               Additionally you can set the <code>allowEmpty</code> to
-              <code>false</code> to disallow the following values:
+              <code>[]</code> to disallow the following values altogether:
             </p>
               <li><code>{}</code> (empty objects)</li>
               <li><code>[]</code> (empty arrays)</li>
               <li><code>""</code> (empty string)</li>
               <li><code>"  "</code> (whitespace only string)</li>
+              <li><code>null</code> (null) </li>
             </ul>
             <p class="notes">
-              <b>Important!</b> All other values are considered valid (including functions)!
+              <b>Important!</b> All other values are considered non empty (including functions)!
+            </p>
+            <p class="notes">
+              <b>Important!</b> If the value is undefined validation passes!
             </p>
 
-            <pre><code class="javascript">validate({}, {username: {presence: true}});
-// =&gt; {"username": ["Username can't be blank"]}
+            <pre><code class="javascript">validate({}, {username: {allowedEmpty: []}});
+// =&gt; undefined 
+// (username isn't even passed in so nothing to validate)
 
-validate({username: "ansman"}, {username: {presence: true}});
+validate({username: "ansman"}, {username: {allowedEmpty: ['NULL'], length: {maximum: 255}}});
 // =&gt; undefined
 
-validate({input: ""}, {input: {presence: true}});
-// =&gt; undefined
+validate({username: '  '}, {username: {allowedEmpty: ['NULL'], length: {maximum: 255}}});
+// =&gt; {'username': ["Only the following empty values are allowed:- ['NULL']"]}
 
-validate({input: ""}, {input: {presence: {allowEmpty: false}}});
-// =&gt; {"input:" ["Input can't be blank"]}
+validate({username: null}, {username: {allowedEmpty: ['NULL'], length: {maximum: 255}}});
+// =&gt; undefined 
+// (length validator skips validation as the user sent an empty value)
+// since null is allowed by the allowedEmpty constraint, the validation passes.
 
-validate({}, {username: {presence: {message: "is required"}}});
-// =&gt; {"username": ["Username is required"]}
+validate({input: ""}, {input: {allowedEmpty: []}});
+// =&gt; {"input": ["Only the following empty values are allowed:- []"]} 
 
-validate.validators.presence.message = "is required";
-validate({}, {username: {presence: true}});
-// =&gt; {"username": ["Username is required"]}
+validate({shoppingCart: []}, {shoppingCart: {allowedEmpty: ['EMPTYLIST']}});
+// =&gt; undefined 
+// (Since empty lists are valid values allowed the constraint and an empty list is passed, it passes)
+
+validate({website: 'blahblah'}, {website: {allowedEmpty:['NULL'], url: true}});
+// =&gt; {"website": ["Website is not a valid url"]} 
+// (the value is not empty, therefore the url validator
+// validates it and gives an error saying that it isn't a valid input)
+
 </code></pre>
           </div>
           <div id="validators-url">

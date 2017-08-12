@@ -1,14 +1,14 @@
 validate.js
 ===
 
-For documentation please see [validatejs.org/](http://validatejs.org/).
+For documentation please see `index.html` in the root directory.  
 
-This forked version is very similar to the [Validate.js as on 25th June](https://github.com/ansman/validate.js/tree/07f64ec81e8dd71d1553c20d750fbb3b7ed40018). The changes I've made are listed below.  
-- Presence validator removed.
-- Empty values ([], blah, blah) always pass validation and are allowed by default.
-- null can be used to unset and that's the reason behind allowedEmpty validator.
-- If you want to disallow emptyvalues use allowedEmpty to whitelist emtpy values.
-- undefined values (values that are not even set) always pass all kinds of validations because the client hasn't even set it.
+This is a forked version of [Validate.js as on 25th June](https://github.com/ansman/validate.js/tree/07f64ec81e8dd71d1553c20d750fbb3b7ed40018). The changes I've made are listed below.  
+- Presence validator removed. allowedEmpty in place of it.
+- `undefined` values are not even validated. The user hasn't even set them and therefore makes no sense to validate them.
+- Empty values `([], {}, '', "  ", null)` pass all validators (most of them) and are allowed by default. Check for `isEmpty()` in the source code of the validators to know if they are allowed or not.
+- These empty values can be used to unset or clear things from the database (Eg:- unsetting the column of a field by sending a null) and that's the reason behind allowedEmpty validator. You can control what kind of empty values a particular field allows. Say you don't want to allow empty values (i.e you don't want the user to unset or erase the value in the database) all you need to do is `allowedEmpty: []`.
+- If you want to disallow emptyvalues use allowedEmpty to whitelist empty values that you allow.
 - Nested be careful. "foo.bar" say foo doesn't have the property bar, so it'll be undefined. The same rules apply, hence be careful.
 
 Building validate.js
