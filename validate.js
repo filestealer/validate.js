@@ -857,7 +857,7 @@
         return;
       }
 
-      return "^Only the following empty values are allowed:- " + JSON.stringify(options);
+      return "Поле должно быть заполнено";
     }, 
 
     numericality: function(value, options, attribute, attributes, globalOptions) {
